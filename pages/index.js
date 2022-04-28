@@ -30,8 +30,9 @@ export default function Home({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.main}>
-        <NavBar username="tobias" />
+        <NavBar />
         <Banner
+          videoId="4zH5iYM4wJo"
           title="Cliffors the red dog"
           subTitle="a very cute dog"
           imgUrl="/static/clifford.webp"

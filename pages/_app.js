@@ -13,10 +13,8 @@ function MyApp({ Component, pageProps }) {
     const isLoggedIn = async () => {
       const user = await magic.user.isLoggedIn();
       if (user) router.push("/");
-
       if (!user) router.push("/login");
     };
-
     isLoggedIn();
   }, []);
 

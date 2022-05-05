@@ -30,21 +30,31 @@ const Login = () => {
   const handleLoginWithEmail = async (e) => {
     e.preventDefault();
     if (email) {
-      if (email === "tobiasohman@outlook.com") {
-        try {
-          setIsLoading(true);
-          const didToken = await magic.auth.loginWithMagicLink({
-            email,
+      try {
+        setIsLoading(true);
+        const didToken = await magic.auth.loginWithMagicLink({
+          email,
+        });
+        if (didToken) {
+          console.log(didToken);
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${didToken}`,
+              "content-type": "application/json",
+            },
           });
-          if (didToken) {
+          const loggedInResponse = await response.json();
+          if (loggedInResponse.done) {
             router.push("/");
+          } else {
+            setIsLoading(false);
+            setUserMsg("Something went wrong loggin in");
           }
-        } catch (error) {
-          console.log(error);
-          setIsLoading(false);
         }
-      } else {
-        setUserMsg("Something went wrong");
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
       }
     } else {
       setUserMsg("Enter a valid email address");

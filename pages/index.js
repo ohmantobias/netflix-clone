@@ -4,15 +4,32 @@ import styles from "../styles/Home.module.css";
 import Banner from "../components/banner/banner";
 import NavBar from "../components/nav/navbar";
 import SectionCards from "../components/card/section-cards";
-import { getVideos, getPopularVideos } from "../lib/videos";
+import {
+  getVideos,
+  getPopularVideos,
+  getWatchItAgainVideos,
+} from "../lib/videos";
 
-export async function getServerSideProps() {
+import { verifyToken } from "../lib/utils";
+
+export async function getServerSideProps(context) {
+  const token = context.req ? context.req?.cookies.token : null;
+
+  const userId = await verifyToken(token);
+
+  const watchItAgainVideos = await getWatchItAgainVideos(token, userId);
   const disneyVideos = await getVideos("disney trailer");
   const travelVideos = await getVideos("travel");
   const productivityVideos = await getVideos("Productivity");
   const popularVideos = await getPopularVideos();
   return {
-    props: { disneyVideos, travelVideos, productivityVideos, popularVideos },
+    props: {
+      disneyVideos,
+      travelVideos,
+      productivityVideos,
+      popularVideos,
+      watchItAgainVideos,
+    },
   };
 }
 
@@ -21,7 +38,9 @@ export default function Home({
   travelVideos,
   productivityVideos,
   popularVideos,
+  watchItAgainVideos,
 }) {
+  console.log({ watchItAgainVideos });
   return (
     <div className={styles.container}>
       <Head>
@@ -39,6 +58,11 @@ export default function Home({
         />
         <div className={styles.sectionWrapper}>
           <SectionCards title="Disney" videos={disneyVideos} size="large" />
+          <SectionCards
+            title="Watch it again"
+            videos={watchItAgainVideos}
+            size="small"
+          />
           <SectionCards title="Travel" videos={travelVideos} size="small" />
           <SectionCards
             title="Productivity"

@@ -10,16 +10,18 @@ import styles from "./navbar.module.css";
 const NavBar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [username, setUsername] = useState("");
-
+  const [didToken, setDidToken] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     const getUsername = async () => {
       try {
         const { email } = await magic.user.getMetadata();
-        if (!email) return;
-
-        setUsername(email);
+        const DIDToken = await magic.user.getIdToken();
+        if (email) {
+          setUsername(email);
+          setDidToken(DIDToken);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -27,14 +29,32 @@ const NavBar = () => {
     getUsername();
   }, []);
 
+  // const handleSignOut = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     await magic.user.logout();
+  //     router.push("/login");
+  //     console.log(await magic.user.isLoggedIn()); // => `false`
+  //   } catch (error) {
+  //     console.log(error);
+  //     router.push("/login");
+  //   }
+  // };
   const handleSignOut = async (e) => {
     e.preventDefault();
+
     try {
-      await magic.user.logout();
-      router.push("/login");
-      console.log(await magic.user.isLoggedIn()); // => `false`
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${didToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const res = await response.json();
     } catch (error) {
-      console.log(error);
+      console.error("Error logging out", error);
       router.push("/login");
     }
   };

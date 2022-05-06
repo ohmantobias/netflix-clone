@@ -36,7 +36,6 @@ const Login = () => {
           email,
         });
         if (didToken) {
-          console.log(didToken);
           const response = await fetch("/api/login", {
             method: "POST",
             headers: {

@@ -40,7 +40,6 @@ export default function Home({
   popularVideos,
   watchItAgainVideos,
 }) {
-  console.log({ watchItAgainVideos });
   return (
     <div className={styles.container}>
       <Head>

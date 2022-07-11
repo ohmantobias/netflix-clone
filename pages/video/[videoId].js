@@ -21,7 +21,7 @@ export async function getStaticProps(context) {
       video: videoArray.length > 0 ? videoArray[0] : {},
     },
 
-    // revalidate: 10,
+    revalidate: 3600,
   };
 }
 
